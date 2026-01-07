@@ -27,11 +27,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 });
 
 
-// Barber Routes
-Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::resource('barbers', BarberController::class);
-});
-
 // Schedule Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::resource('schedules', ScheduleController::class);
@@ -50,7 +45,6 @@ Route::middleware(['auth', 'role:pelanggan'])->group(function () {
 Route::get('/dashboard', function () {
     return match (auth()->user()->role) {
         'admin' => redirect()-> route('admin.dashboard'),
-        'barber' => redirect()-> route('barber.dashboard'),
         default => redirect()-> route('pelanggan.dashboard'),
     };
 })->middleware('auth')->name('dashboard');
@@ -65,14 +59,6 @@ Route::middleware(['auth','role:admin'])
     });
 
 
-// BARBER
-Route::middleware(['auth','role:barber'])
-    ->prefix('barber')
-    ->name('barber.')
-    ->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'barber'])
-            ->name('dashboard');
-    });
 
 
 // PELANGGAN
@@ -94,11 +80,6 @@ Route::middleware(['auth','role:admin'])->group(function () {
         ->name('booking.status.admin');
 });
 
-// BARBER
-Route::middleware(['auth','role:barber'])->group(function () {
-    Route::patch('/booking/{booking}/complete', [BookingStatusController::class, 'complete'])
-        ->name('booking.complete');
-});
 
 // PELANGGAN
 Route::middleware(['auth','role:pelanggan'])->group(function () {

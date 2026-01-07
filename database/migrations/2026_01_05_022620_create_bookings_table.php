@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('barber_id')->constrained()->cascadeOnDelete();
             $table->foreignId('service_id')->constrained()->cascadeOnDelete();
             $table->foreignId('schedule_id')->constrained()->cascadeOnDelete();
             $table->enum('status', ['pending', 'confirmed', 'completed', 'cancelled'])

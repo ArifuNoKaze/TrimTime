@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Service;
-use App\Models\Barber;
 use App\Models\Schedule;
 use App\Models\Booking;
 use Illuminate\Http\Request;
@@ -14,7 +13,6 @@ class BookingController extends Controller
     {
         return view('booking.index', [
             'services' => Service::all(),
-            'barbers' => Barber::where('status', true)->with('user')->get(),
             'schedules' => Schedule::where('is_available', true)
                 ->whereDate('date', '>=', now()->toDateString())
                 ->with('barber.user')
@@ -26,7 +24,6 @@ class BookingController extends Controller
     {
         $request->validate([
             'service_id' => 'required|exists:services,id',
-            'barber_id' => 'required|exists:barbers,id',
             'schedule_id' => 'required|exists:schedules,id',
         ]);
 
@@ -37,7 +34,6 @@ class BookingController extends Controller
         // simpan booking
         Booking::create([
             'user_id' => auth()->id(),
-            'barber_id' => $request->barber_id,
             'service_id' => $request->service_id,
             'schedule_id' => $schedule->id,
             'status' => 'confirmed',

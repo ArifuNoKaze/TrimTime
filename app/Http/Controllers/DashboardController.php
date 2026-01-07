@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\User;
 use App\Models\Service;
-use App\Models\Barber;
 
 class DashboardController extends Controller
 {
@@ -14,7 +13,6 @@ class DashboardController extends Controller
     {
         return view('dashboard.admin', [
             'totalUsers' => User::count(),
-            'totalBarbers' => Barber::count(),
             'totalServices' => Service::count(),
             'totalBookings' => Booking::count(),
             'latestBookings' => Booking::with('user','barber.user','service')
@@ -42,7 +40,7 @@ class DashboardController extends Controller
     {
         return view('dashboard.pelanggan', [
             'bookings' => Booking::where('user_id', auth()->id())
-                ->with('barber.user','service','schedule')
+                ->with('service','schedule')
                 ->latest()
                 ->get(),
         ]);

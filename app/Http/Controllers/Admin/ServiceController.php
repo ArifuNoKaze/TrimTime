@@ -65,3 +65,4 @@ class ServiceController extends Controller
             ->with('success', 'Service berhasil dihapus');
     }
 }
+

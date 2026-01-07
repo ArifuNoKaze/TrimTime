@@ -12,11 +12,6 @@ class Booking extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function barber()
-    {
-        return $this->belongsTo(Barber::class);
-    }
-
     public function service()
     {
         return $this->belongsTo(Service::class);
@@ -29,7 +24,6 @@ class Booking extends Model
 
     protected $fillable = [
         'user_id',
-        'barber_id',
         'service_id',
         'schedule_id',
         'status',
