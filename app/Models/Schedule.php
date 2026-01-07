@@ -12,10 +12,6 @@ class Schedule extends Model
         'is_available',
     ];
 
-    public function barber()
-    {
-        return $this->belongsTo(Barber::class);
-    }
 
     public function booking()
     {

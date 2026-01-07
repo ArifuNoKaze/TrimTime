@@ -4,7 +4,6 @@
 
         <div class="grid grid-cols-4 gap-4 mb-6">
             <div>Total User: {{ $totalUsers }}</div>
-            <div>Total Barber: {{ $totalBarbers }}</div>
             <div>Total Service: {{ $totalServices }}</div>
             <div>Total Booking: {{ $totalBookings }}</div>
         </div>

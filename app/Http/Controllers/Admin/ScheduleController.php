@@ -4,15 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Schedule;
-use App\Models\Barber;
 use Illuminate\Http\Request;
 
 class ScheduleController extends Controller
 {
     public function index()
     {
-        $schedules = Schedule::with('barber.user')
-            ->orderBy('date')
+        $schedules = Schedule::orderBy('date')
             ->orderBy('start_time')
             ->get();
 
@@ -21,25 +19,26 @@ class ScheduleController extends Controller
 
     public function create()
     {
-        $barbers = Barber::where('status', true)->with('user')->get();
-        return view('admin.schedules.create', compact('barbers'));
+        return view('admin.schedules.create');
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'barber_id' => 'required|exists:barbers,id',
             'date' => 'required|date',
             'start_time' => 'required',
             'end_time' => 'required|after:start_time',
         ]);
 
-        // Cegah jadwal bentrok
-        $exists = Schedule::where('barber_id', $request->barber_id)
-            ->where('date', $request->date)
+        // Cegah jadwal bentrok (GLOBAL)
+        $exists = Schedule::where('date', $request->date)
             ->where(function ($q) use ($request) {
                 $q->whereBetween('start_time', [$request->start_time, $request->end_time])
-                  ->orWhereBetween('end_time', [$request->start_time, $request->end_time]);
+                  ->orWhereBetween('end_time', [$request->start_time, $request->end_time])
+                  ->orWhere(function ($q2) use ($request) {
+                      $q2->where('start_time', '<=', $request->start_time)
+                         ->where('end_time', '>=', $request->end_time);
+                  });
             })
             ->exists();
 
@@ -50,10 +49,10 @@ class ScheduleController extends Controller
         }
 
         Schedule::create([
-            'barber_id' => $request->barber_id,
             'date' => $request->date,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
+            'is_available' => true,
         ]);
 
         return redirect()
@@ -63,20 +62,22 @@ class ScheduleController extends Controller
 
     public function edit(Schedule $schedule)
     {
-        $barbers = Barber::where('status', true)->with('user')->get();
-        return view('admin.schedules.edit', compact('schedule', 'barbers'));
+        return view('admin.schedules.edit', compact('schedule'));
     }
 
     public function update(Request $request, Schedule $schedule)
     {
         $request->validate([
-            'barber_id' => 'required|exists:barbers,id',
             'date' => 'required|date',
             'start_time' => 'required',
             'end_time' => 'required|after:start_time',
         ]);
 
-        $schedule->update($request->all());
+        $schedule->update([
+            'date' => $request->date,
+            'start_time' => $request->start_time,
+            'end_time' => $request->end_time,
+        ]);
 
         return redirect()
             ->route('admin.schedules.index')
