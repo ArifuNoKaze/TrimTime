@@ -1,48 +1,84 @@
 <x-app-layout>
-    <div class="p-6 max-w-xl">
-        <h1 class="text-2xl font-bold mb-4">Booking TrimTime</h1>
+    <div class="min-h-screen bg-[#121212] py-12">
+        <div class="max-w-5xl mx-auto px-4">
 
-        @if(session('success'))
-            <div class="text-green-600 mb-4">
-                {{ session('success') }}
+            {{-- HEADER --}}
+            <h2 class="text-3xl font-bold text-white mb-8">
+                Konfirmasi Booking
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+                {{-- DETAIL LAYANAN --}}
+                <div class="lg:col-span-1 bg-[#1a1a1a] border border-neutral-800 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-yellow-500 mb-2">
+                        {{ $service->name }}
+                    </h3>
+
+                    <p class="text-neutral-400 text-sm mb-4">
+                        {{ $service->description ?? 'Layanan potong rambut premium dengan barber profesional.' }}
+                    </p>
+
+                    <div class="space-y-2 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-neutral-400">Harga</span>
+                            <span class="text-white font-semibold">
+                                Rp {{ number_format($service->price, 0, ',', '.') }}
+                            </span>
+                        </div>
+
+                        <div class="flex justify-between">
+                            <span class="text-neutral-400">Durasi</span>
+                            <span class="text-white font-semibold">
+                                {{ $service->duration ?? 30 }} Menit
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                {{-- PILIH JADWAL --}}
+                <div class="lg:col-span-2 bg-[#1a1a1a] border border-neutral-800 rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        Pilih Jadwal Tersedia
+                    </h3>
+
+                    <form method="POST" action="{{ route('booking.store') }}">
+                        @csrf
+                        <input type="hidden" name="service_id" value="{{ $service->id }}">
+
+                        <div class="space-y-3 max-h-[300px] overflow-y-auto pr-2">
+                            @forelse($schedules as $schedule)
+                                <label class="flex items-center justify-between p-4 border border-neutral-700 rounded-lg cursor-pointer hover:border-yellow-600 transition">
+                                    <div class="flex items-center gap-3">
+                                        <input type="radio" name="schedule_id" value="{{ $schedule->id }}" required>
+                                        <div>
+                                            <p class="text-white font-medium">
+                                                {{ \Carbon\Carbon::parse($schedule->date)->format('d M Y') }}
+                                            </p>
+                                            <p class="text-neutral-400 text-sm">
+                                                {{ $schedule->time }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <span class="text-green-500 text-sm font-semibold">
+                                        Tersedia
+                                    </span>
+                                </label>
+                            @empty
+                                <p class="text-neutral-400">
+                                    Tidak ada jadwal tersedia untuk layanan ini.
+                                </p>
+                            @endforelse
+                        </div>
+
+                        <button
+                            class="mt-6 w-full py-3 bg-yellow-600 text-black font-bold rounded-lg hover:bg-yellow-500 transition">
+                            Konfirmasi Booking
+                        </button>
+                    </form>
+                </div>
+
             </div>
-        @endif
-
-        <form method="POST" action="{{ route('booking.store') }}">
-            @csrf
-
-            <select name="service_id" class="w-full mb-3" required>
-                <option value="">Pilih Service</option>
-                @foreach($services as $service)
-                    <option value="{{ $service->id }}">
-                        {{ $service->name }} - Rp {{ number_format($service->price) }}
-                    </option>
-                @endforeach
-            </select>
-
-            <select name="barber_id" class="w-full mb-3" required>
-                <option value="">Pilih Barber</option>
-                @foreach($barbers as $barber)
-                    <option value="{{ $barber->id }}">
-                        {{ $barber->user->name }}
-                    </option>
-                @endforeach
-            </select>
-
-            <select name="schedule_id" class="w-full mb-3" required>
-                <option value="">Pilih Jadwal</option>
-                @foreach($schedules as $schedule)
-                    <option value="{{ $schedule->id }}">
-                        {{ $schedule->barber->user->name }} |
-                        {{ $schedule->date }} |
-                        {{ $schedule->start_time }} - {{ $schedule->end_time }}
-                    </option>
-                @endforeach
-            </select>
-
-            <button class="bg-green-600 text-white px-4 py-2 rounded">
-                Booking Sekarang
-            </button>
-        </form>
+        </div>
     </div>
 </x-app-layout>

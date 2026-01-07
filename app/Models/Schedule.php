@@ -18,4 +18,10 @@ class Schedule extends Model
         return $this->hasOne(Booking::class);
     }
 
+    public function service()
+{
+    return $this->belongsTo(Service::class);
+}
+
+
 }

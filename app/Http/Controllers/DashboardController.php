@@ -38,12 +38,25 @@ class DashboardController extends Controller
     // PELANGGAN DASHBOARD
     public function pelanggan()
     {
-        return view('dashboard.pelanggan', [
-            'bookings' => Booking::where('user_id', auth()->id())
-                ->with('service','schedule')
-                ->latest()
-                ->get(),
-        ]);
+        $userId = auth()->id();
+
+        $bookings = Booking::where('user_id', $userId)
+            ->with('service','schedule')
+            ->latest()
+            ->get();
+
+        $upcomingBooking = Booking::where('user_id', $userId)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->with('service','schedule')
+            ->orderBy('created_at')
+            ->first();
+
+        $services = Service::all();
+
+        return view('dashboard.pelanggan', compact(
+            'bookings',
+            'upcomingBooking',
+            'services'
+        ));
     }
 }
-

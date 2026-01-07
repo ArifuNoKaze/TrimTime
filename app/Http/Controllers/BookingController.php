@@ -9,16 +9,17 @@ use Illuminate\Http\Request;
 
 class BookingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('booking.index', [
-            'services' => Service::all(),
-            'schedules' => Schedule::where('is_available', true)
-                ->whereDate('date', '>=', now()->toDateString())
-                ->with('barber.user')
-                ->get(),
-        ]);
+        $service = Service::findOrFail($request->service_id);
+
+        $schedules = Schedule::where('is_available', true)
+            ->where('service_id', $service->id)
+            ->get();
+
+        return view('booking.index', compact('service', 'schedules'));
     }
+
 
     public function store(Request $request)
     {

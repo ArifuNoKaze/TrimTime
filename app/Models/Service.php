@@ -14,4 +14,10 @@ class Service extends Model
         'duration',
         'price',
     ];
+
+    public function schedules()
+{
+    return $this->hasMany(Schedule::class);
+}
+
 }
