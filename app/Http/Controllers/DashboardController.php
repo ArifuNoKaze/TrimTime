@@ -15,7 +15,7 @@ class DashboardController extends Controller
             'totalUsers' => User::count(),
             'totalServices' => Service::count(),
             'totalBookings' => Booking::count(),
-            'latestBookings' => Booking::with('user','barber.user','service')
+            'latestBookings' => Booking::with('user','service')
                 ->latest()
                 ->take(5)
                 ->get(),

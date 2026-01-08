@@ -95,8 +95,8 @@
                 <div class="group bg-[#1a1a1a] border border-neutral-800 rounded-2xl overflow-hidden hover:border-yellow-600/50 transition-all duration-300 hover:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] flex flex-col">
                     
                     <div class="h-48 w-full overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?q=80&w=800&auto=format&fit=crop" 
-                             alt="{{ $service->name }}" 
+                        <img src="{{ asset('storage/' . $service->image) }}" 
+                            alt="{{ $service->name }}"
                              class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-75 group-hover:brightness-100">
                         
                         <div class="absolute top-4 right-4 bg-black/70 backdrop-blur-md px-3 py-1 rounded-full border border-yellow-600/30">

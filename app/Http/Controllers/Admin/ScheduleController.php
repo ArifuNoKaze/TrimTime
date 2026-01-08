@@ -19,12 +19,14 @@ class ScheduleController extends Controller
 
     public function create()
     {
-        return view('admin.schedules.create');
+        $services = \App\Models\Service::all(); // Ambil semua layanan
+        return view('admin.schedules.create', compact('services'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
+            'service_id' => 'required|exists:services,id',
             'date' => 'required|date',
             'start_time' => 'required',
             'end_time' => 'required|after:start_time',
@@ -49,6 +51,7 @@ class ScheduleController extends Controller
         }
 
         Schedule::create([
+            'service_id' => $request->service_id,
             'date' => $request->date,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,
@@ -62,18 +65,21 @@ class ScheduleController extends Controller
 
     public function edit(Schedule $schedule)
     {
-        return view('admin.schedules.edit', compact('schedule'));
+        $services = \App\Models\Service::all(); // Tambahkan ini
+        return view('admin.schedules.edit', compact('schedule', 'services'));
     }
 
     public function update(Request $request, Schedule $schedule)
     {
         $request->validate([
+            'service_id' => 'required|exists:services,id',
             'date' => 'required|date',
             'start_time' => 'required',
             'end_time' => 'required|after:start_time',
         ]);
 
         $schedule->update([
+            'service_id' => $request->service_id,
             'date' => $request->date,
             'start_time' => $request->start_time,
             'end_time' => $request->end_time,

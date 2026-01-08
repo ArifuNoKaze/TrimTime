@@ -13,6 +13,7 @@ class Service extends Model
         'description',
         'duration',
         'price',
+        'image'
     ];
 
     public function schedules()

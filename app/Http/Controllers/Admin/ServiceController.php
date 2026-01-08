@@ -22,7 +22,8 @@ class ServiceController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        // 1. Simpan hasil validasi ke dalam variabel
+        $validatedData = $request->validate([
             'name' => 'required|string|max:100',
             'duration' => 'required|integer|min:1',
             'price' => 'required|integer|min:0',
@@ -30,14 +31,17 @@ class ServiceController extends Controller
             'image' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $imagePath = null;
-
+        // 2. Proses upload gambar jika ada
         if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')
-        ->store('services', 'public');
+            // Simpan file ke storage/app/public/services
+            $imagePath = $request->file('image')->store('services', 'public');
+            
+            // TIMPA nilai 'image' di array $validatedData dengan path yang baru
+            $validatedData['image'] = $imagePath;
         }
 
-        Service::create($request->all());
+        // 3. Gunakan $validatedData, JANGAN gunakan $request->all()
+        Service::create($validatedData);
 
         return redirect()
             ->route('admin.services.index')
@@ -73,6 +77,11 @@ class ServiceController extends Controller
         return redirect()
             ->route('admin.services.index')
             ->with('success', 'Service berhasil dihapus');
+    }
+
+    public function show(Service $service)
+    {
+        return view('admin.services.show', compact('service'));
     }
 }
 
