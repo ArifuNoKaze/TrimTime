@@ -48,8 +48,15 @@ class User extends Authenticatable
         ];
     }
 
-    public function barber()
+    // role checkers
+        public function isAdmin(): bool
     {
-        return $this->hasOne(Barber::class);
+        return $this->role === 'admin';
     }
+
+    public function isCustomer(): bool
+    {
+        return $this->role === 'pelanggan';
+    }
+
 }

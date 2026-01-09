@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\ScheduleController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BookingStatusController;
+use App\Http\Controllers\BookingHistoryController;
 
 
 Route::get('/', function () {
@@ -87,3 +88,12 @@ Route::middleware(['auth','role:pelanggan'])->group(function () {
         ->name('booking.cancel');
 });
 require __DIR__.'/auth.php';
+
+
+
+// Booking History Routes
+
+Route::middleware(['auth','role:pelanggan'])->group(function () {
+    Route::get('/booking/history', [BookingHistoryController::class, 'index'])
+        ->name('booking.history');
+});

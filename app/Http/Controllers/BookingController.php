@@ -1,10 +1,9 @@
 <?php
-
 namespace App\Http\Controllers;
 
-use App\Models\Service;
-use App\Models\Schedule;
 use App\Models\Booking;
+use App\Models\Schedule;
+use App\Models\Service;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -20,11 +19,10 @@ class BookingController extends Controller
         return view('booking.index', compact('service', 'schedules'));
     }
 
-
     public function store(Request $request)
     {
         $request->validate([
-            'service_id' => 'required|exists:services,id',
+            'service_id'  => 'required|exists:services,id',
             'schedule_id' => 'required|exists:schedules,id',
         ]);
 
@@ -34,19 +32,29 @@ class BookingController extends Controller
 
         // simpan booking
         Booking::create([
-            'user_id' => auth()->id(),
-            'service_id' => $request->service_id,
+            'user_id'     => auth()->id(),
+            'service_id'  => $request->service_id,
             'schedule_id' => $schedule->id,
-            'status' => 'confirmed',
         ]);
 
         // kunci jadwal
         $schedule->update([
-            'is_available' => false
+            'is_available' => false,
         ]);
 
+        // redirect dengan sukses
+        $schedule = Schedule::findOrFail($request->schedule_id);
+
+        if (! $schedule->is_available) {
+            return back()->withErrors([
+                'schedule_id' => 'Jadwal sudah tidak tersedia.',
+            ]);
+        }
+
         return redirect()
-            ->route('booking.index')
-            ->with('success', 'Booking berhasil 🎉');
+            ->route('booking.index', $request->service_id)
+            ->with('success', 'Booking berhasil! Jadwal kamu sudah dikonfirmasi.');
+
+
     }
 }

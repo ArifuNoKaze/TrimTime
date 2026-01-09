@@ -32,7 +32,7 @@
                     </div>
 
                     <div class="grid grid-cols-2 gap-4">
-                        <a href="{{ route('booking.index') }}" class="group bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 rounded-2xl p-4 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+                        <a href="{{ route('booking.history') }}" class="group bg-neutral-800 hover:bg-neutral-700 border border-neutral-700 rounded-2xl p-4 flex flex-col justify-between transition-all duration-300 hover:-translate-y-1 cursor-pointer">
                             <div class="w-10 h-10 rounded-full bg-neutral-900 flex items-center justify-center text-white mb-2 group-hover:text-yellow-500 transition-colors">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
