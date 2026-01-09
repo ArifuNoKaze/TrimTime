@@ -30,31 +30,21 @@ class BookingController extends Controller
             ->where('is_available', true)
             ->firstOrFail();
 
-        // simpan booking
+        // 1. Simpan booking
         Booking::create([
             'user_id'     => auth()->id(),
             'service_id'  => $request->service_id,
             'schedule_id' => $schedule->id,
+            'status'      => 'pending', // pastikan ada status default
         ]);
 
-        // kunci jadwal
-        $schedule->update([
-            'is_available' => false,
-        ]);
+        // 2. Kunci jadwal
+        $schedule->update(['is_available' => false]);
 
-        // redirect dengan sukses
-        $schedule = Schedule::findOrFail($request->schedule_id);
 
-        if (! $schedule->is_available) {
-            return back()->withErrors([
-                'schedule_id' => 'Jadwal sudah tidak tersedia.',
-            ]);
-        }
-
+        // 4. Redirect
         return redirect()
-            ->route('booking.index', $request->service_id)
-            ->with('success', 'Booking berhasil! Jadwal kamu sudah dikonfirmasi.');
-
-
+            ->route('pelanggan.dashboard') 
+            ->with('success', 'Booking berhasil!');
     }
 }

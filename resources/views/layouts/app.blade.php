@@ -30,7 +30,43 @@
                     </div>
                 </header>
             @endisset
+            @if (session('success'))
+                <div id="global-alert" 
+                    class="fixed inset-0 z-[9999] flex items-center justify-center pointer-events-none animate-fade-in">
+                    <div class="bg-[#d4af37] text-black px-8 py-6 rounded-3xl font-black uppercase tracking-[0.2em] shadow-[0_0_50px_rgba(212,175,55,0.6)] flex flex-col items-center gap-4 border-4 border-black/10 pointer-events-auto transform transition-all scale-110">
+                        {{-- Icon Centang Besar --}}
+                        <div class="bg-black rounded-full p-3 shadow-lg">
+                            <svg class="w-10 h-10 text-[#d4af37]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path>
+                            </svg>
+                        </div>
+                        
+                        {{-- Teks Pesan --}}
+                        <span class="text-xl text-center">{{ session('success') }}</span>
+                    </div>
+                </div>
 
+                <script>
+                    setTimeout(() => {
+                        const alert = document.getElementById('global-alert');
+                        if(alert) {
+                            alert.style.transition = "opacity 0.5s ease";
+                            alert.style.opacity = "0";
+                            setTimeout(() => alert.remove(), 500);
+                        }
+                    }, 4000);
+                </script>
+
+                <style>
+                    @keyframes fadeIn {
+                        from { opacity: 0; transform: scale(0.9); }
+                        to { opacity: 1; transform: scale(1); }
+                    }
+                    .animate-fade-in {
+                        animation: fadeIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+                    }
+                </style>
+            @endif
             <!-- Page Content -->
             <main>
                 {{ $slot }}
